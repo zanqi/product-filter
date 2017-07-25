@@ -2,20 +2,67 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-class App extends Component {
+class ProductListFilter extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <SearchBar />
+        <ProductListTable products={this.props.products}/>
       </div>
     );
   }
 }
 
-export default App;
+class SearchBar extends Component {
+  render() {
+    return (
+      <div>
+        <input type="text" placeholder="Search" />
+        <div>
+          <input id="chkProductOnly" type="checkbox"/>
+          <label htmlFor="chkProductOnly">Only show products in stock</label>
+        </div>
+      </div>
+    );
+  }
+}
+
+class ProductListTable extends Component {
+  render() {
+    const products = this.props.products;
+    const rows = []
+    let lastCategory = undefined;
+
+    products.forEach(function(product) {
+      if (product.category !== lastCategory) {
+        lastCategory = product.category;
+        rows.push(<CategoryRow category={lastCategory} />);
+      }
+      rows.push(<ProductRow product={product} />);
+    }, this);
+
+    return (
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+        </tr>
+        {rows}
+      </table>
+    );
+  }
+}
+
+class ProductRow extends Component {
+  render() {
+    return null;
+  }
+}
+
+class CategoryRow extends Component {
+  render() {
+    return null;
+  }
+}
+
+export default ProductListFilter;
