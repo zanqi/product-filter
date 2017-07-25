@@ -3,11 +3,24 @@ import logo from './logo.svg';
 import './App.css';
 
 class ProductListFilter extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filterText : "",
+      inStockOnly : false
+    }
+  }
+
   render() {
     return (
       <div>
-        <SearchBar />
-        <ProductListTable products={this.props.products}/>
+        <SearchBar 
+          filterText={this.state.filterText} 
+          inStockOnly={this.state.inStockOnly} />
+        <ProductListTable 
+          products={this.props.products}
+          filterText={this.state.filterText} 
+          inStockOnly={this.state.inStockOnly} />
       </div>
     );
   }
@@ -17,9 +30,9 @@ class SearchBar extends Component {
   render() {
     return (
       <div>
-        <input type="text" placeholder="Search" />
+        <input type="text" placeholder="Search" value={this.props.filterText} />
         <div>
-          <input id="chkProductOnly" type="checkbox"/>
+          <input id="chkProductOnly" type="checkbox" checked={this.props.inStockOnly}/>
           <label htmlFor="chkProductOnly">Only show products in stock</label>
         </div>
       </div>
@@ -34,6 +47,9 @@ class ProductListTable extends Component {
     let lastCategory = undefined;
 
     products.forEach(function(product) {
+      if ((!product.name.includes(this.props.filterText)) || (this.props.inStockOnly && !product.stocked)) {
+        return;
+      }
       if (product.category !== lastCategory) {
         lastCategory = product.category;
         rows.push(<CategoryRow category={lastCategory} />);
@@ -55,13 +71,22 @@ class ProductListTable extends Component {
 
 class ProductRow extends Component {
   render() {
-    return null;
+    return (
+      <tr>
+        <td>{this.props.product.name}</td>
+        <td>{this.props.product.price}</td>
+      </tr>
+    );
   }
 }
 
 class CategoryRow extends Component {
   render() {
-    return null;
+    return (
+      <tr>
+        <th colSpan="2">{this.props.category}</th>
+      </tr>
+    );
   }
 }
 
