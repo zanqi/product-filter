@@ -6,8 +6,8 @@ class ProductListFilter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filterText : "",
-      inStockOnly : false
+      filterText: "",
+      inStockOnly: false
     }
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
     this.handleInStockOnlyChange = this.handleInStockOnlyChange.bind(this);
@@ -28,14 +28,14 @@ class ProductListFilter extends Component {
   render() {
     return (
       <div>
-        <SearchBar 
-          filterText={this.state.filterText} 
-          inStockOnly={this.state.inStockOnly} 
+        <SearchBar
+          filterText={this.state.filterText}
+          inStockOnly={this.state.inStockOnly}
           onFilterTextChange={this.handleFilterTextChange}
           onInStockOnlyChange={this.handleInStockOnlyChange} />
-        <ProductListTable 
+        <ProductListTable
           products={this.props.products}
-          filterText={this.state.filterText} 
+          filterText={this.state.filterText}
           inStockOnly={this.state.inStockOnly} />
       </div>
     );
@@ -43,12 +43,13 @@ class ProductListFilter extends Component {
 }
 
 class SearchBar extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
     this.handleInStockOnlyChange = this.handleInStockOnlyChange.bind(this);
   }
 
+  // This two handler encapsulate the events type within this component
   handleFilterTextChange(e) {
     this.props.onFilterTextChange(e.target.value);
   }
@@ -62,7 +63,7 @@ class SearchBar extends Component {
       <div>
         <input type="text" placeholder="Search" value={this.props.filterText} onChange={this.handleFilterTextChange} />
         <div>
-          <input id="chkProductOnly" type="checkbox" 
+          <input id="chkProductOnly" type="checkbox"
             checked={this.props.inStockOnly}
             onChange={this.handleInStockOnlyChange} />
           <label htmlFor="chkProductOnly">Only show products in stock</label>
@@ -78,24 +79,28 @@ class ProductListTable extends Component {
     const rows = []
     let lastCategory = undefined;
 
-    products.forEach(function(product) {
+    products.forEach(function (product) {
       if ((!product.name.includes(this.props.filterText)) || (this.props.inStockOnly && !product.stocked)) {
         return;
       }
       if (product.category !== lastCategory) {
         lastCategory = product.category;
-        rows.push(<CategoryRow category={lastCategory} />);
+        rows.push(<CategoryRow category={lastCategory} key={product.category} />);
       }
-      rows.push(<ProductRow product={product} />);
+      rows.push(<ProductRow product={product} key={product.name} />);
     }, this);
 
     return (
       <table>
-        <tr>
-          <th>Name</th>
-          <th>Price</th>
-        </tr>
-        {rows}
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows}
+        </tbody>
       </table>
     );
   }
