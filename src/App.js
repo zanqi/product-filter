@@ -9,6 +9,20 @@ class ProductListFilter extends Component {
       filterText : "",
       inStockOnly : false
     }
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+    this.handleInStockOnlyChange = this.handleInStockOnlyChange.bind(this);
+  }
+
+  handleFilterTextChange(text) {
+    this.setState({
+      filterText: text
+    });
+  }
+
+  handleInStockOnlyChange(inStockOnly) {
+    this.setState({
+      inStockOnly: inStockOnly
+    });
   }
 
   render() {
@@ -16,7 +30,9 @@ class ProductListFilter extends Component {
       <div>
         <SearchBar 
           filterText={this.state.filterText} 
-          inStockOnly={this.state.inStockOnly} />
+          inStockOnly={this.state.inStockOnly} 
+          onFilterTextChange={this.handleFilterTextChange}
+          onInStockOnlyChange={this.handleInStockOnlyChange} />
         <ProductListTable 
           products={this.props.products}
           filterText={this.state.filterText} 
@@ -27,12 +43,28 @@ class ProductListFilter extends Component {
 }
 
 class SearchBar extends Component {
+  constructor(props){
+    super(props);
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+    this.handleInStockOnlyChange = this.handleInStockOnlyChange.bind(this);
+  }
+
+  handleFilterTextChange(e) {
+    this.props.onFilterTextChange(e.target.value);
+  }
+
+  handleInStockOnlyChange(e) {
+    this.props.onInStockOnlyChange(e.target.checked);
+  }
+
   render() {
     return (
       <div>
-        <input type="text" placeholder="Search" value={this.props.filterText} />
+        <input type="text" placeholder="Search" value={this.props.filterText} onChange={this.handleFilterTextChange} />
         <div>
-          <input id="chkProductOnly" type="checkbox" checked={this.props.inStockOnly}/>
+          <input id="chkProductOnly" type="checkbox" 
+            checked={this.props.inStockOnly}
+            onChange={this.handleInStockOnlyChange} />
           <label htmlFor="chkProductOnly">Only show products in stock</label>
         </div>
       </div>
